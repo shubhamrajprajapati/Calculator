@@ -14,34 +14,30 @@ app.use(express.urlencoded({ extended: true }));
 // Validation
 const validate = (num1, num2, operator) => {
 	let total;
-    switch (num1) {
-      case "":
-        total = "Can't calculate. First input can not be empty.";
-        break;
 
-      case "":
-        total = "Can't calculate. Second input can not be empty.";
-        break;
-
-      default: // After empty validation assigned to proper integer
+  if (num1 === "" || num1 === null) {
+      total = "Can't calculate. First input can not be empty or a character.";
+  } else if (num2 === "" || num2 === null){
+      total = "Can't calculate. Second input can not be empty or a character..";
+  } else { // After empty validation assigned to proper integer
+     
 		num1 = Number(num1);
 		num2 = Number(num2);
 
 		// Checking if number or mixed character
-        if (Number.isInteger(num1)) {
-          if (Number.isInteger(num2)) {
-            total = calculate(num1, num2, operator);
-          } else {
-            total = "Please enter number as your second input.";
-          }
-        } else {
-          total = "Please enter number as your first input.";
-        }
-        break;
+    if (Number.isInteger(num1)) {
+      if (Number.isInteger(num2)) {
+        total = calculate(num1, num2, operator);
+      } else {
+        total = "Please enter number as your second input.";
+      }
+    } else {
+      total = "Please enter number as your first input.";
     }
+  }
 
 	return total;
-  };
+};
 
 // Function for calculating
 const calculate = (num1, num2, operator) => {
@@ -76,7 +72,9 @@ app.post("/calculate-form-data", (req, res) => {
   const num2 = req.body.number2;
   const operator = req.body.operator1;
 
-  res.send(validate(num1, num2, operator));
+  res.json(
+    {"finalResponse": validate(num1, num2, operator)}
+  );
 
 });
 
@@ -86,7 +84,9 @@ app.post("/calculate-ajax", (req, res) => {
 	const num2 = req.body.num2;
 	const operator = req.body.operator2;
   
-	res.send(validate(num1, num2, operator));
+	res.json(
+    {"finalResponse": validate(num1, num2, operator)}
+  );
   
   });
 
